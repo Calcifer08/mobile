@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Профиль"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:hint="Имя"
+            android:inputType="text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.781"
+            app:layout_constraintStart_toEndOf="@+id/textName"
+            app:layout_constraintTop_toTopOf="@+id/textName" />
+
+        <EditText
+            android:id="@+id/editFamily"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:hint="Фамилия"
+            android:inputType="text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textFamily"
+            app:layout_constraintEnd_toEndOf="@+id/editName"
+            app:layout_constraintStart_toStartOf="@+id/editName"
+            app:layout_constraintTop_toTopOf="@+id/textFamily" />
+
+        <EditText
+            android:id="@+id/editNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:hint="Номер"
+            android:inputType="phone"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textNumber"
+            app:layout_constraintEnd_toEndOf="@+id/editName"
+            app:layout_constraintStart_toStartOf="@+id/editName"
+            app:layout_constraintTop_toTopOf="@+id/textNumber" />
+
+        <EditText
+            android:id="@+id/editCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:hint="Город"
+            android:inputType="text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textCity"
+            app:layout_constraintEnd_toEndOf="@+id/editName"
+            app:layout_constraintStart_toStartOf="@+id/editName"
+            app:layout_constraintTop_toTopOf="@+id/textCity" />
+
+        <EditText
+            android:id="@+id/editWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="8"
+            android:hint="Работа"
+            android:inputType="text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textWork"
+            app:layout_constraintEnd_toEndOf="@+id/editName"
+            app:layout_constraintStart_toStartOf="@+id/editName"
+            app:layout_constraintTop_toTopOf="@+id/textWork" />
+
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="148dp"
+            android:text="Имя"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textFamily"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Фамилия"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/textName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textName"
+            app:layout_constraintTop_toBottomOf="@+id/textName" />
+
+        <TextView
+            android:id="@+id/textNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Номер"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/textName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textName"
+            app:layout_constraintTop_toBottomOf="@+id/textFamily" />
+
+        <TextView
+            android:id="@+id/textCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Город"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/textName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textName"
+            app:layout_constraintTop_toBottomOf="@+id/textNumber" />
+
+        <TextView
+            android:id="@+id/textWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Работа"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/textName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textName"
+            app:layout_constraintTop_toBottomOf="@+id/textCity" />
+
+        <Button
+            android:id="@+id/buttonSaveProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="132dp"
+            android:text="Сохранить"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editWork" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

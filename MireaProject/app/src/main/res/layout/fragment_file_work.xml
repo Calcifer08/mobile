@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.filework.FileWorkFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewWorkFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Работа с файлами"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/buttonWriteFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="472dp"
+            android:text="Сохранить"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/buttonReadFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Показать"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonWriteFile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/buttonWriteFile"
+            app:layout_constraintTop_toTopOf="@+id/buttonWriteFile" />
+
+        <Button
+            android:id="@+id/buttonEncryptFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Зашифровать"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonWriteFile" />
+
+        <Button
+            android:id="@+id/buttonDecryptFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Расшифровать"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/buttonEncryptFile"
+            app:layout_constraintStart_toStartOf="@+id/buttonEncryptFile"
+            app:layout_constraintTop_toBottomOf="@+id/buttonEncryptFile" />
+
+        <EditText
+            android:id="@+id/editDataFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="13"
+            android:hint="Содержимое"
+            android:inputType="text|textMultiLine"
+            android:maxLines="8"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonWriteFile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner"
+            app:layout_constraintVertical_bias="0.148" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="352dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:spinnerMode="dropdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewWorkFile" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

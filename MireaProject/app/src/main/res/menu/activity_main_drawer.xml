@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/menu_gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_slideshow" />
+
+        <item
+            android:id="@+id/dataFragment"
+            android:icon="@android:drawable/btn_star_big_on"
+            android:title="@string/data_fragment" />
+
+        <item
+            android:id="@+id/webViewFragment"
+            android:icon="@android:drawable/ic_menu_set_as"
+            android:title="@string/web_view_fragment" />
+
+        <item
+            android:id="@+id/backgroundTask"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="@string/background_task" />
+
+        <item
+            android:id="@+id/sensorFragment"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="@string/sensor" />
+
+        <item
+            android:id="@+id/audioFragment"
+            android:icon="@android:drawable/ic_btn_speak_now"
+            android:title="@string/audio" />
+
+        <item
+            android:id="@+id/cameraFragment"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="@string/camera" />
+
+        <item
+            android:id="@+id/profileFragment"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="@string/profile" />
+
+        <item
+            android:id="@+id/fileWorkFragment"
+            android:icon="@android:drawable/ic_lock_idle_lock"
+            android:title="@string/filework" />
+    </group>
+</menu>

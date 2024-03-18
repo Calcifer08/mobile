@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.audio.AudioFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/buttonRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Начать запись"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/buttonPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Воспроизвести"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/buttonRec"
+            app:layout_constraintStart_toStartOf="@+id/buttonRec"
+            app:layout_constraintTop_toBottomOf="@+id/buttonRec"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textViewMicro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Микрофон"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.045" />
+
+        <TextView
+            android:id="@+id/textViewSpeed"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:text="Изменить скорость воспроизведения"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonPlay"
+            app:layout_constraintVertical_bias="0.226" />
+
+        <Button
+            android:id="@+id/buttonSpeed1x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1x"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSpeed" />
+
+        <Button
+            android:id="@+id/buttonSpeed0x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.5x"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonSpeed1x"
+            app:layout_constraintEnd_toStartOf="@+id/buttonSpeed1x"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/buttonSpeed1x" />
+
+        <Button
+            android:id="@+id/buttonSpeed2x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2x"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonSpeed1x"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/buttonSpeed1x"
+            app:layout_constraintTop_toTopOf="@+id/buttonSpeed1x" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
