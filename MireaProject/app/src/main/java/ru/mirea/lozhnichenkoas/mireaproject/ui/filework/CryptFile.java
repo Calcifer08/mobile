@@ -26,7 +26,7 @@ public class CryptFile {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            // создаем поток для записи данных
+            // создаем поток для записи
             FileOutputStream fileOutputStream = activity.openFileOutput(fileName, Context.MODE_PRIVATE);
             CipherOutputStream cipherOutputStream = new CipherOutputStream(fileOutputStream, cipher);
 
