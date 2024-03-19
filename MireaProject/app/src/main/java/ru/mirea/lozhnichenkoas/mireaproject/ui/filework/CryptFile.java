@@ -12,24 +12,26 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 
-public class CryprFile {
-    public static void encryptFile(Activity activity, String fileName, String data, SecretKey secretKey) {
+public class CryptFile {
+    public static void encryptFile(Activity activity, String fileName, SecretKey secretKey) {
         if (fileName.isEmpty()) {
             Toast.makeText(activity, "Введите имя файла", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            // Создаем шифр для шифрования
+            String data = FileRead.readFile(activity, fileName);
+
+            // создаем шифр для шифрования
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            // Создаем исходящий поток для записи зашифрованных данных в файл
+            // создаем поток для записи данных
             FileOutputStream fileOutputStream = activity.openFileOutput(fileName, Context.MODE_PRIVATE);
             CipherOutputStream cipherOutputStream = new CipherOutputStream(fileOutputStream, cipher);
 
-            // Записываем данные и закрываем поток
-            cipherOutputStream.write(data.getBytes());
+            // записываем данные
+            cipherOutputStream.write(data.getBytes("UTF-8"));
             cipherOutputStream.close();
 
             Toast.makeText(activity, "Файл успешно зашифрован", Toast.LENGTH_SHORT).show();
@@ -41,15 +43,14 @@ public class CryprFile {
 
     public static String decryptFile(Activity activity, String fileName, SecretKey secretKey) {
         try {
-            // Создаем шифр для расшифровки
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
 
-            // Создаем входящий поток для чтения зашифрованных данных из файла
+            // поток для чтения данных из файла
             FileInputStream fileInputStream = activity.openFileInput(fileName);
             CipherInputStream cipherInputStream = new CipherInputStream(fileInputStream, cipher);
 
-            // Читаем данные и конвертируем в строку с использованием кодировки UTF-8
+            // читаем и конвертируем в строку
             StringBuilder stringBuilder = new StringBuilder();
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -57,11 +58,6 @@ public class CryprFile {
                 stringBuilder.append(new String(buffer, 0, bytesRead, "UTF-8"));
             }
             cipherInputStream.close();
-
-            // Записываем расшифрованные данные в файл
-            FileOutputStream fileOutputStream = activity.openFileOutput(fileName, Context.MODE_PRIVATE);
-            fileOutputStream.write(stringBuilder.toString().getBytes("UTF-8"));
-            fileOutputStream.close();
 
             return stringBuilder.toString();
         } catch (Exception e) {

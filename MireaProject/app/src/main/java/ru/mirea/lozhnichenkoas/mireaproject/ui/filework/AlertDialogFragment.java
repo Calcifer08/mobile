@@ -24,7 +24,7 @@ public class AlertDialogFragment extends DialogFragment {
                         EditText editTextFileNameDialog = getDialog().findViewById(R.id.editTextFileNameDialog);
                         EditText editTextDataDialog = getDialog().findViewById(R.id.editTextDataDialog);
                         FileSave.saveFile(getActivity(),
-                                editTextFileNameDialog.getText().toString(),
+                                editTextFileNameDialog.getText().toString() + ".txt",
                                 editTextDataDialog.getText().toString());
                     }
                 })

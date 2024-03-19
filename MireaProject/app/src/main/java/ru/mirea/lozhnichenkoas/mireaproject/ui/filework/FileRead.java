@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FileRead {
-    public static String getTextFromFile(Context context, String fileName) {
+    public static String readFile(Context context, String fileName) {
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = context.openFileInput(fileName);

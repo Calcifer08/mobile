@@ -68,7 +68,7 @@ public class FileWorkFragment extends Fragment {
                             editDataFile.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    editDataFile.setText(FileRead.getTextFromFile(requireContext(), fileName));
+                                    editDataFile.setText(FileRead.readFile(requireContext(), fileName));
                                 }
                             });
                         }
@@ -81,7 +81,6 @@ public class FileWorkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String fileName = (String) spinner.getSelectedItem();
-                fileName = fileName.substring(0, fileName.length() - 4); // обрезаем .txt
                 String data = editDataFile.getText().toString();
                 if (!data.isEmpty()){
                     FileSave.saveFile(requireActivity(),
@@ -98,9 +97,8 @@ public class FileWorkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String fileName = (String) spinner.getSelectedItem();
-                String data = FileRead.getTextFromFile(requireContext(), fileName);
                 SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
-                CryprFile.encryptFile(requireActivity(),fileName, data, secretKey);
+                CryptFile.encryptFile(requireActivity(),fileName, secretKey);
             }
         });
 
@@ -109,7 +107,11 @@ public class FileWorkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
-                editDataFile.setText(CryprFile.decryptFile(requireActivity(), fileName, secretKey));
+                String fileName = (String) spinner.getSelectedItem();
+                String decryptdata = CryptFile.decryptFile(requireActivity(), fileName, secretKey);
+                //если надо - сохраняем
+                FileSave.saveFile(requireActivity(), fileName, decryptdata);
+                editDataFile.setText(decryptdata);
             }
         });
 
@@ -119,17 +121,17 @@ public class FileWorkFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        editDataFile.setText(""); // Очищаем текст в EditText при возобновлении фрагмента
+        editDataFile.setText(""); // очищаем текст при остановке фрагмента
     }
 
     private void getFiles() {
-        // Получаем директорию, в которой хранятся файлы
+        // получаем директорию
         File directory = requireActivity().getFilesDir();
 
-        // Получаем список файлов в директории
+        // получаем список файлов в директории
         File[] files = directory.listFiles();
 
-        // Создаем список имен файлов для отображения в выпадающем списке
+        // создаем список имен файлов для отображения в выпадающем списке
         List<String> fileNames = new ArrayList<>();
         if (files != null) {
             // ищем только .txt
@@ -138,10 +140,10 @@ public class FileWorkFragment extends Fragment {
                     fileNames.add(file.getName());
         }
 
-        // Создаем адаптер для выпадающего списка
+        // создаем адаптер для выпадающего списка
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, fileNames);
 
-        // Устанавливаем адаптер для выпадающего списка
+        // устанавливаем адаптер для выпадающего списка
         spinner.setAdapter(adapter);
     }
 }

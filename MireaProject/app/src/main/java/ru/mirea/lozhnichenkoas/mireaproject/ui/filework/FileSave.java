@@ -15,7 +15,7 @@ public class FileSave {
         }
 
         try {
-            FileOutputStream fileOutputStream = activity.openFileOutput(fileName + ".txt", Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = activity.openFileOutput(fileName, Context.MODE_PRIVATE);
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
             Toast.makeText(activity, "Файл успешно сохранен", Toast.LENGTH_SHORT).show();
