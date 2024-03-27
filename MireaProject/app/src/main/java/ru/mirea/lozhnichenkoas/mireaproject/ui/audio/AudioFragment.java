@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +42,9 @@ public class AudioFragment extends Fragment {
     private MediaPlayer player;
     private MediaRecorder recorder;
     private FragmentAudioBinding fragmentAudioBinding;
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissions -> {
+        isWork = permissions.containsValue(true);
+    });
 
     // включить 1 и 3 переключатель в настройках микрофона (3 точки над телефоном)
     @Override
@@ -64,8 +70,8 @@ public class AudioFragment extends Fragment {
                 storagePermissionStatus == PackageManager.PERMISSION_GRANTED) {
             isWork = true;
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+            requestPermissionLauncher.launch(new String[]{android.Manifest.permission.RECORD_AUDIO,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE});
         }
 
         buttunSpeed1x.setOnClickListener(v -> setPlaybackSpeed(1.0f));
@@ -74,16 +80,21 @@ public class AudioFragment extends Fragment {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isStartRecording) {
-                    recordButton.setText("Запись остановлена");
-                    playButton.setEnabled(false);
-                    startRecording();
-                } else {
-                    recordButton.setText("Начать запись");
-                    playButton.setEnabled(true);
-                    stopRecording();
+                if (isWork) {
+                    if (isStartRecording) {
+                        recordButton.setText("Запись остановлена");
+                        playButton.setEnabled(false);
+                        startRecording();
+                    } else {
+                        recordButton.setText("Начать запись");
+                        playButton.setEnabled(true);
+                        stopRecording();
+                    }
+                    isStartRecording = !isStartRecording;
                 }
-                isStartRecording = !isStartRecording;
+                else {
+                    Toast.makeText(requireContext(), "Разрешений нет", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -104,18 +115,6 @@ public class AudioFragment extends Fragment {
         });
 
         return root;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSION) {
-            isWork = grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        }
-        if (!isWork) {
-            requireActivity().finish();  //если разрешения не дали - закрываем активити
-        }
     }
 
     private void startRecording() {

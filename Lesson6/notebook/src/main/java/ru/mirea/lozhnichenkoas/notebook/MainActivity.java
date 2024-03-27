@@ -1,7 +1,11 @@
 package ru.mirea.lozhnichenkoas.notebook;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -26,6 +30,8 @@ import ru.mirea.lozhnichenkoas.notebook.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_PERMISSION = 100;
+    private boolean isWork = false;
     private EditText editTextFileName;
     private EditText editTextCitata;
     private Button buttonWrite;
@@ -45,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
         buttonWrite = binding.buttonWrite;
         buttonRead = binding.buttonRead;
 
+        int	storagePermissionStatus = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if	(storagePermissionStatus ==	PackageManager.PERMISSION_GRANTED) {
+            isWork = true;
+        } else {
+            //	Выполняется запрос к пользователь на получение необходимых разрешений
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+        }
         buttonWrite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +124,17 @@ public class MainActivity extends AppCompatActivity {
             Log.w("ExternalStorage", String.format("Read from file %s successful", lines.toString()));
         } catch (Exception e) {
             Log.w("ExternalStorage", String.format("Read from file %s failed", e.getMessage()));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)	{
+        //	производится проверка полученного результата от пользователя на запрос разрешения Camera
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if	(requestCode == REQUEST_CODE_PERMISSION) {
+            //	permission	granted
+            isWork = grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
     }
 }

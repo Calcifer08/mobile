@@ -21,6 +21,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +34,6 @@ import ru.mirea.lozhnichenkoas.mireaproject.databinding.FragmentCameraBinding;
 
 public class CameraFragment extends Fragment {
 
-    private static final int REQUEST_CODE_PERMISSION = 100;
-    private static final int CAMERA_REQUEST = 0;
     private boolean isWork = false;
     private Uri imageUri;
     private FragmentCameraBinding fragmentCameraBinding;
@@ -44,8 +43,7 @@ public class CameraFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_camera, container, false);
+
         fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false);
         View root = fragmentCameraBinding.getRoot();
 
@@ -57,11 +55,7 @@ public class CameraFragment extends Fragment {
                 ==	PackageManager.PERMISSION_GRANTED) {
             isWork = true;
         } else {
-//            //	Выполняется запрос к пользователь на получение необходимых разрешений
-//            ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.CAMERA,
-//                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
             requestPermissionLauncher.launch(new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE});
-
         }
 
         //	Создание функции обработки результата от системного приложения «камера»
@@ -97,6 +91,9 @@ public class CameraFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+                else {
+                    Toast.makeText(requireContext(), "Нет разрешений", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return root;
@@ -110,17 +107,4 @@ public class CameraFragment extends Fragment {
         File storageDirectory = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName, ".jpg", storageDirectory);
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)	{
-//        //	производится проверка полученного результата от пользователя на запрос разрешения Camera
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if	(requestCode == REQUEST_CODE_PERMISSION) {
-//            //	permission	granted
-//            isWork = grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-//        }
-//    }
-
-
 }

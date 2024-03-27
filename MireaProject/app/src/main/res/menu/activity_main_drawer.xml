@@ -28,7 +28,7 @@
             android:title="@string/web_view_fragment" />
 
         <item
-            android:id="@+id/backgroundTask"
+            android:id="@+id/backgroundTaskFragment"
             android:icon="@android:drawable/ic_menu_recent_history"
             android:title="@string/background_task" />
 
@@ -56,5 +56,15 @@
             android:id="@+id/fileWorkFragment"
             android:icon="@android:drawable/ic_lock_idle_lock"
             android:title="@string/filework" />
+
+        <item
+            android:id="@+id/currencyFragment"
+            android:icon="@android:drawable/stat_sys_download"
+            android:title="@string/currency" />
+
+        <item
+            android:id="@+id/mapFragment"
+            android:icon="@drawable/ic_menu_mapmode"
+            android:title="@string/map" />
     </group>
 </menu>

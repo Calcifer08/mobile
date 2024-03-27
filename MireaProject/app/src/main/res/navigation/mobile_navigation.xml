@@ -29,11 +29,11 @@
         tools:layout="@layout/fragment_data" />
     <fragment
         android:id="@+id/webViewFragment"
-        android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.WebView.WebViewFragment"
+        android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.web.WebViewFragment"
         android:label="@string/web_view_fragment"
         tools:layout="@layout/fragment_web_view" />
     <fragment
-        android:id="@+id/backgroundTask"
+        android:id="@+id/backgroundTaskFragment"
         android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.worker.BackgroundTaskFragment"
         android:label="@string/background_task"
         tools:layout="@layout/fragment_background_task" />
@@ -62,4 +62,14 @@
         android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.filework.FileWorkFragment"
         android:label="@string/filework"
         tools:layout="@layout/fragment_file_work" />
+    <fragment
+        android:id="@+id/currencyFragment"
+        android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.сurrency.CurrencyFragment"
+        android:label="@string/currency"
+        tools:layout="@layout/fragment_currency" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="ru.mirea.lozhnichenkoas.mireaproject.ui.map.MapFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_map" />
 </navigation>
