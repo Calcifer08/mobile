@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        updateUI(null);
     }
 
     private void updateUI(FirebaseUser user) {
@@ -103,10 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createAccount(String email, String password) {
         Log.d(TAG, "create account: " + email);
-        //проверка на правильность ввода
-//        if (!validateForm()) {
-//            return;
-//        }
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

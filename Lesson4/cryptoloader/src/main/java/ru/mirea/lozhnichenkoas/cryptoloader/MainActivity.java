@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Bundle	bundle	=	new	Bundle();
         bundle.putByteArray(MyLoader.ARG_WORD,	encryptedMessage);
         bundle.putByteArray("key",	secretKey.getEncoded());
+        bundle.putString("EXP", message);
         LoaderManager.getInstance(this).initLoader(LoaderID,	bundle,	this);
 
 

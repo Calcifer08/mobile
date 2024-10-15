@@ -65,7 +65,6 @@ public class BackgroundTaskFragment extends Fragment {
                         });
             }
         });
-        //backgroundTackViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 }

@@ -26,7 +26,7 @@ public class MyLoader extends AsyncTaskLoader<String> {
     public MyLoader(@NonNull Context context, Bundle args) {
         super(context);
         if (args != null) {
-            firstName = args.getString("EXP");
+            firstName = args.getString("EXP", "Нет значения по ключу EXP");
             if (args.getByteArray("key") != null) {
                 //	Обработка данных в oader
                 cryptText = args.getByteArray(ARG_WORD);
