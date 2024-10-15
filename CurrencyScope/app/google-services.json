@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "130081683646",
+    "project_id": "currencyscope",
+    "storage_bucket": "currencyscope.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130081683646:android:900faf2defe11347f186ef",
+        "android_client_info": {
+          "package_name": "ru.mirea.lozhnichenkoas.currencyscope"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAif3UrdD-QbLom9kqSEIR3rzhEo2AMfgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
