@@ -1,23 +1,24 @@
 package ru.mirea.lozhnichenkoas.currencyscope.presentation;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import ru.mirea.lozhnichenkoas.currencyscope.R;
 import ru.mirea.lozhnichenkoas.currencyscope.databinding.ActivityAuthBinding;
-import ru.mirea.lozhnichenkoas.data.repositories.UserRepositoryImpl;
-import ru.mirea.lozhnichenkoas.domain.repositories.callback.AuthCallback;
-import ru.mirea.lozhnichenkoas.domain.usecases.LoginUserUseCase;
-import ru.mirea.lozhnichenkoas.domain.usecases.RegisterUserUseCase;
+import ru.mirea.lozhnichenkoas.currencyscope.presentation.viewmodel.AuthViewModel;
+import ru.mirea.lozhnichenkoas.currencyscope.presentation.viewmodel.factory.AuthViewModelFactory;
 
 public class AuthActivity extends AppCompatActivity {
     private ActivityAuthBinding binding;
-    private RegisterUserUseCase registerUserUseCase;
-    private LoginUserUseCase loginUserUseCase;
+    private AuthViewModel authViewModel;
+    private boolean isRegis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +26,46 @@ public class AuthActivity extends AppCompatActivity {
         binding = ActivityAuthBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UserRepositoryImpl userRepository = new UserRepositoryImpl(this);
-        registerUserUseCase = new RegisterUserUseCase(userRepository);
-        loginUserUseCase = new LoginUserUseCase(userRepository);
+        authViewModel = new ViewModelProvider(this,
+                new AuthViewModelFactory(this)).get(AuthViewModel.class);
+
+        loadPicasso();
 
         setupListeners();
+        setupObservers();
+    }
+
+    private void loadPicasso(){
+        Picasso.get()
+                .load("https://icon-icons.com/downloadimage.php?id=81499&root=1153/PNG/512/&file=1486564179-finance-saving_81499.png")
+                .error(R.drawable.default_currency)
+                .placeholder(R.drawable.default_currency)
+                .into(binding.imageView);
+
     }
 
     private void setupListeners(){
         binding.buttonRegis.setOnClickListener(v -> registration());
         binding.buttonAuth.setOnClickListener(v -> login());
         binding.buttonBack.setOnClickListener(v -> finish());
+    }
+
+    private void setupObservers(){
+        authViewModel.getAuthMutableLiveData().observe(this, email -> {
+            if (email != null) {
+                textToastSuccess(email);
+                Intent intent = new Intent();
+                intent.putExtra("EMAIL", email);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        authViewModel.getErrorMutableLiveData().observe(this, errorMessage -> {
+            if (errorMessage != null) {
+                textToastFailure(errorMessage);
+            }
+        });
     }
 
     private void registration(){
@@ -46,21 +76,8 @@ public class AuthActivity extends AppCompatActivity {
             return;
         }
 
-        registerUserUseCase.execute(email, password, new AuthCallback() {
-            @Override
-            public void onSuccess(String email) {
-                Toast.makeText(AuthActivity.this, "Регистрация успешна: " + email, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra("EMAIL", email);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(AuthActivity.this, "Ошибка регистрации: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        isRegis = true;
+        authViewModel.register(email, password);
     }
 
     private void login(){
@@ -71,21 +88,8 @@ public class AuthActivity extends AppCompatActivity {
             return;
         }
 
-        loginUserUseCase.execute(email, password, new AuthCallback() {
-            @Override
-            public void onSuccess(String email) {
-                Toast.makeText(AuthActivity.this, "Вход успешен: " + email, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.putExtra("EMAIL", email);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(AuthActivity.this, "Ошибка входа: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        isRegis = false;
+        authViewModel.login(email, password);
     }
 
     private boolean validateInputs(String email, String password){
@@ -94,5 +98,21 @@ public class AuthActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void textToastSuccess(String email){
+        if (isRegis) {
+            Toast.makeText(AuthActivity.this, "Регистрация успешна: " + email, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(AuthActivity.this, "Вход успешен: " + email, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void textToastFailure(String errorMessage){
+        if (isRegis) {
+            Toast.makeText(AuthActivity.this, "Ошибка регистрации: " + errorMessage, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(AuthActivity.this, "Ошибка входа: " + errorMessage, Toast.LENGTH_SHORT).show();
+        }
     }
 }

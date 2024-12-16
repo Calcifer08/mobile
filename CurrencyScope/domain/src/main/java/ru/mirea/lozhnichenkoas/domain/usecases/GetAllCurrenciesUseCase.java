@@ -4,6 +4,7 @@ import java.util.List;
 
 import ru.mirea.lozhnichenkoas.domain.models.Currency;
 import ru.mirea.lozhnichenkoas.domain.repositories.CurrencyRepository;
+import ru.mirea.lozhnichenkoas.domain.repositories.callback.NetworkCallback;
 
 public class GetAllCurrenciesUseCase {
     private CurrencyRepository currencyRepository;
@@ -12,7 +13,7 @@ public class GetAllCurrenciesUseCase {
         this.currencyRepository = currencyRepository;
     }
 
-    public List<Currency> execute(){
-        return currencyRepository.getAllCurrencies();
+    public void execute(NetworkCallback<List<Currency>> callback){
+        currencyRepository.getAllCurrencies(callback);
     }
 }

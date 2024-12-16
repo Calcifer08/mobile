@@ -1,11 +1,11 @@
 package ru.mirea.lozhnichenkoas.currencyscope.presentation.fragments;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +19,18 @@ import android.widget.Toast;
 import java.util.List;
 
 import ru.mirea.lozhnichenkoas.currencyscope.R;
+import ru.mirea.lozhnichenkoas.currencyscope.databinding.FragmentCurrencyDetailsBinding;
 import ru.mirea.lozhnichenkoas.currencyscope.presentation.AuthActivity;
-import ru.mirea.lozhnichenkoas.currencyscope.presentation.MainActivity;
+import ru.mirea.lozhnichenkoas.currencyscope.presentation.viewmodel.MainViewModel;
+import ru.mirea.lozhnichenkoas.currencyscope.presentation.viewmodel.factory.MainViewModelFactory;
 import ru.mirea.lozhnichenkoas.domain.models.Currency;
-import ru.mirea.lozhnichenkoas.domain.repositories.CurrencyRepository;
-import ru.mirea.lozhnichenkoas.domain.usecases.AddFavoriteCurrencyUseCase;
-import ru.mirea.lozhnichenkoas.domain.usecases.RemoveFavoriteCurrencyUseCase;
 
 public class CurrencyDetailsFragment extends Fragment {
+    private FragmentCurrencyDetailsBinding binding;
+    private MainViewModel mainViewModel;
     private static final String ARG_CURRENCY = "CURRENCY";
     private boolean isAuth = false;
-    private CurrencyRepository currencyRepository;
     private Currency currency;
-    private AddFavoriteCurrencyUseCase addFavoriteCurrencyUseCase;
-    private RemoveFavoriteCurrencyUseCase removeFavoriteCurrencyUseCase;
     private TextView textCurrencyName;
     private ImageView imageCurrencyIcon;
     private TextView textCurrencyCharCode;
@@ -52,13 +50,10 @@ public class CurrencyDetailsFragment extends Fragment {
     private Button buttonConvert;
     private Button buttonGoBack;
 
-    public static CurrencyDetailsFragment newInstance(
-            Currency currency, CurrencyRepository currencyRepository, boolean isAuth) {
+    public static CurrencyDetailsFragment newInstance(Currency currency) {
         CurrencyDetailsFragment fragment = new CurrencyDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CURRENCY, currency);
-        fragment.currencyRepository = currencyRepository;
-        fragment.isAuth = isAuth;
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,33 +64,34 @@ public class CurrencyDetailsFragment extends Fragment {
         if (getArguments() != null) {
             currency = (Currency) getArguments().getSerializable(ARG_CURRENCY);
         }
+
+        mainViewModel = new ViewModelProvider(requireActivity(),
+                new MainViewModelFactory(requireContext())).get(MainViewModel.class);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_currency_details, container, false);
+        binding = FragmentCurrencyDetailsBinding.inflate(inflater, container, false);
 
-        addFavoriteCurrencyUseCase = new AddFavoriteCurrencyUseCase(currencyRepository);
-        removeFavoriteCurrencyUseCase = new RemoveFavoriteCurrencyUseCase(currencyRepository);
-
-        textCurrencyName = view.findViewById(R.id.textCurrencyName);
-        imageCurrencyIcon = view.findViewById(R.id.imageCurrencyIcon);
-        textCurrencyCharCode = view.findViewById(R.id.textCurrencyCharCode);
-        textNominalValue = view.findViewById(R.id.textNominalValue);
-        textCurrencyRateValue = view.findViewById(R.id.textCurrencyRateValue);
-        textCurrencyChange = view.findViewById(R.id.textCurrencyChange);
-        buttonAddToFavorites = view.findViewById(R.id.buttonAddToFavorites);
-        buttonDeleteFromFavorites = view.findViewById(R.id.buttonDeleteFromFavorites);
-        editTextAmountLeft = view.findViewById(R.id.editTextAmountLeft);
-        textCharCodeLeft = view.findViewById(R.id.textCharCodeLeft);
-        imageLeft = view.findViewById(R.id.imageLeft);
-        textAmountRight = view.findViewById(R.id.textAmountRight);
-        textCharCodeRight = view.findViewById(R.id.textCharCodeRight);
-        imageRight = view.findViewById(R.id.imageRight);
-        buttonConvert = view.findViewById(R.id.buttonConvert);
-        buttonSwapCurrencies = view.findViewById(R.id.buttonSwapCurrencies);
-        buttonGoBack = view.findViewById(R.id.buttonGoBack);
+        textCurrencyName = binding.textCurrencyName;
+        imageCurrencyIcon = binding.imageCurrencyIcon;
+        textCurrencyCharCode = binding.textCurrencyCharCode;
+        textNominalValue = binding.textNominalValue;
+        textCurrencyRateValue = binding.textCurrencyRateValue;
+        textCurrencyChange = binding.textCurrencyChange;
+        buttonAddToFavorites = binding.buttonAddToFavorites;
+        buttonDeleteFromFavorites = binding.buttonDeleteFromFavorites;
+        editTextAmountLeft = binding.editTextAmountLeft;
+        textCharCodeLeft = binding.textCharCodeLeft;
+        imageLeft = binding.imageLeft;
+        textAmountRight = binding.textAmountRight;
+        textCharCodeRight = binding.textCharCodeRight;
+        imageRight = binding.imageRight;
+        buttonConvert = binding.buttonConvert;
+        buttonSwapCurrencies = binding.buttonSwapCurrencies;
+        buttonGoBack = binding.buttonGoBack;
 
         if (currency != null) {
             textCurrencyName.setText(currency.getName());
@@ -108,6 +104,15 @@ public class CurrencyDetailsFragment extends Fragment {
             textCharCodeRight.setText(currency.getCharCode());
             imageRight.setImageResource(currency.getIconId());
 
+            mainViewModel.getUserNameLiveData().observe(getViewLifecycleOwner(), nameUser -> {
+                isAuth = nameUser != null;
+                if (isAuth) {
+                    checkIsFavorite(currency.getCharCode());
+                } else {
+                    buttonAddToFavorites.setVisibility(View.VISIBLE);
+                    buttonDeleteFromFavorites.setVisibility(View.GONE);
+                }
+            });
 
             buttonAddToFavorites.setOnClickListener(v -> addToFavorites());
 
@@ -118,34 +123,19 @@ public class CurrencyDetailsFragment extends Fragment {
             buttonSwapCurrencies.setOnClickListener(v -> swapCurrencies());
 
             buttonGoBack.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
-
-            if (isAuth) {
-                checkIsFavorite(currency.getCharCode());
-            }
         }
 
-        return view;
+        return binding.getRoot();
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == getActivity().RESULT_OK) {
-            String email = data.getStringExtra("EMAIL");
-            isAuth = true;
-
-            ((MainActivity) getActivity()).setAuthState(true, email);
-        }
-    }
-
-    public void updateAuthState(boolean isAuth) {
-        this.isAuth = isAuth;
-        buttonAddToFavorites.setVisibility(View.VISIBLE);
-        buttonDeleteFromFavorites.setVisibility(View.GONE);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void checkIsFavorite(String charCode){
-        List<String> favoriteCurrencies = currencyRepository.getFavoriteCurrencies();
+        List<String> favoriteCurrencies = mainViewModel.getFavoriteCurrenciesName();
         updateUIButtonFavorite(favoriteCurrencies.contains(charCode));
     }
 
@@ -156,6 +146,28 @@ public class CurrencyDetailsFragment extends Fragment {
         } else {
             buttonAddToFavorites.setVisibility(View.VISIBLE);
             buttonDeleteFromFavorites.setVisibility(View.GONE);
+        }
+    }
+
+    private void addToFavorites(){
+        if (isAuth) {
+            mainViewModel.addToFavorites(currency.getCharCode());
+            updateUIButtonFavorite(true);
+            Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(requireContext(), AuthActivity.class);
+            getActivity().startActivityForResult(intent, 1);
+        }
+    }
+
+    private void deleteFromFavorites() {
+        if (isAuth) {
+            mainViewModel.deleteFromFavorites(currency.getCharCode());
+            updateUIButtonFavorite(false);
+            Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(requireContext(), AuthActivity.class);
+            getActivity().startActivityForResult(intent, 1);
         }
     }
 
@@ -173,28 +185,6 @@ public class CurrencyDetailsFragment extends Fragment {
             textCurrencyChange.setTextColor(ContextCompat.getColor(getContext(), R.color.green));
             textCurrencyChange.setText("-" + String.format("%.4f", difference) +
                     " " + "-" + String.format("%.4f", percent) + "%");
-        }
-    }
-
-    private void addToFavorites(){
-        if (isAuth) {
-            addFavoriteCurrencyUseCase.execute(currency.getCharCode());
-            updateUIButtonFavorite(true);
-            Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(requireContext(), AuthActivity.class);
-            startActivityForResult(intent, 1);
-        }
-    }
-
-    private void deleteFromFavorites() {
-        if (isAuth) {
-            removeFavoriteCurrencyUseCase.execute(currency.getCharCode());
-            updateUIButtonFavorite(false);
-            Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(requireContext(), AuthActivity.class);
-            startActivityForResult(intent, 1);
         }
     }
 
