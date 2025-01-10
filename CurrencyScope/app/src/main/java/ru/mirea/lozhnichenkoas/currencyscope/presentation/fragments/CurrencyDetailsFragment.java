@@ -1,11 +1,17 @@
 package ru.mirea.lozhnichenkoas.currencyscope.presentation.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +36,8 @@ public class CurrencyDetailsFragment extends Fragment {
     private MainViewModel mainViewModel;
     private static final String ARG_CURRENCY = "CURRENCY";
     private boolean isAuth = false;
+    private ActivityResultLauncher<Intent> loginActivityLauncher;
+
     private Currency currency;
     private TextView textCurrencyName;
     private ImageView imageCurrencyIcon;
@@ -68,6 +76,15 @@ public class CurrencyDetailsFragment extends Fragment {
         mainViewModel = new ViewModelProvider(requireActivity(),
                 new MainViewModelFactory(requireContext())).get(MainViewModel.class);
 
+        loginActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String email = result.getData().getStringExtra("EMAIL");
+                        mainViewModel.resultLogin(email);
+                    }
+                }
+        );
     }
 
     @Override
@@ -100,9 +117,10 @@ public class CurrencyDetailsFragment extends Fragment {
             textNominalValue.setText(String.valueOf(currency.getNominal()));
             textCurrencyRateValue.setText(String.valueOf(currency.getValue()));
             calculateCoefficient();
-            textAmountRight.setText(String.valueOf(currency.getValue()));
+            textAmountRight.setText(String.valueOf(currency.getNominal()));
             textCharCodeRight.setText(currency.getCharCode());
             imageRight.setImageResource(currency.getIconId());
+            editTextAmountLeft.setText(String.valueOf(currency.getValue()));
 
             mainViewModel.getUserNameLiveData().observe(getViewLifecycleOwner(), nameUser -> {
                 isAuth = nameUser != null;
@@ -122,7 +140,11 @@ public class CurrencyDetailsFragment extends Fragment {
 
             buttonSwapCurrencies.setOnClickListener(v -> swapCurrencies());
 
-            buttonGoBack.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
+//            buttonGoBack.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
+            buttonGoBack.setOnClickListener(v -> {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                navController.popBackStack();
+            });
         }
 
         return binding.getRoot();
@@ -156,7 +178,7 @@ public class CurrencyDetailsFragment extends Fragment {
             Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(requireContext(), AuthActivity.class);
-            getActivity().startActivityForResult(intent, 1);
+            loginActivityLauncher.launch(intent);
         }
     }
 
@@ -167,7 +189,7 @@ public class CurrencyDetailsFragment extends Fragment {
             Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(requireContext(), AuthActivity.class);
-            getActivity().startActivityForResult(intent, 1);
+            loginActivityLauncher.launch(intent);
         }
     }
 
@@ -218,9 +240,9 @@ public class CurrencyDetailsFragment extends Fragment {
         double inputValue = Double.parseDouble(text);
         double course;
         if (isLeftRUB) {
-            course = inputValue / currency.getValue();
+            course = (inputValue * currency.getNominal()) / currency.getValue();
         } else {
-            course = inputValue * currency.getValue();
+            course = (inputValue * currency.getValue()) / currency.getNominal();
         }
         textAmountRight.setText(String.format("%.4f", course));
     }

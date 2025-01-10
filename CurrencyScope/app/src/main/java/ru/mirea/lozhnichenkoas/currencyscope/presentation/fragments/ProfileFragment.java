@@ -5,6 +5,8 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,6 +27,7 @@ import ru.mirea.lozhnichenkoas.currencyscope.presentation.viewmodel.factory.Main
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private MainViewModel mainViewModel;
+    private ActivityResultLauncher<Intent> loginActivityLauncher;
 
 
     public ProfileFragment() {
@@ -36,6 +39,16 @@ public class ProfileFragment extends Fragment {
 
         mainViewModel = new ViewModelProvider(requireActivity(),
                 new MainViewModelFactory(requireActivity())).get(MainViewModel.class);
+
+        loginActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String email = result.getData().getStringExtra("EMAIL");
+                        mainViewModel.resultLogin(email);
+                    }
+                }
+        );
     }
 
     @Override
@@ -70,7 +83,7 @@ public class ProfileFragment extends Fragment {
 
     private void login() {
         Intent intent = new Intent(requireActivity(), AuthActivity.class);
-        startActivityForResult(intent, 1);
+        loginActivityLauncher.launch(intent);
     }
 
     @Override

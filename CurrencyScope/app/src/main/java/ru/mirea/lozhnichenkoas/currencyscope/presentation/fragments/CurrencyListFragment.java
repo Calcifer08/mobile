@@ -5,10 +5,15 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHostController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +40,9 @@ public class CurrencyListFragment extends Fragment {
     private MainViewModel mainViewModel;
     private RecyclerView recyclerView;
     private CurrencyAdapter currencyAdapter;
+    private NavController navController;
     private boolean isAuth = false;
+    private ActivityResultLauncher<Intent> loginActivityLauncher;
 
 
     public CurrencyListFragment() {
@@ -46,6 +53,16 @@ public class CurrencyListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mainViewModel = new ViewModelProvider(requireActivity(),
                 new MainViewModelFactory(requireActivity())).get(MainViewModel.class);
+
+        loginActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String email = result.getData().getStringExtra("EMAIL");
+                        mainViewModel.resultLogin(email);
+                    }
+                }
+        );
     }
 
     @Override
@@ -59,6 +76,7 @@ public class CurrencyListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        navController = NavHostFragment.findNavController(this);
         setupListeners();
         setupObservers();
 
@@ -93,7 +111,7 @@ public class CurrencyListFragment extends Fragment {
         });
         binding.buttonSearchByVoice.setOnClickListener(v -> {
             Toast.makeText(requireActivity(), "Заглушка", Toast.LENGTH_SHORT).show();
-            //mainViewModel.showCurrencyByVoice();////////////////////////////// дописать
+            //mainViewModel.showCurrencyByVoice();
         });
     }
 
@@ -116,16 +134,7 @@ public class CurrencyListFragment extends Fragment {
 
     private void login() {
         Intent intent = new Intent(requireActivity(), AuthActivity.class);
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            String email = data.getStringExtra("EMAIL");
-            mainViewModel.resultLogin(email);
-        }
+        loginActivityLauncher.launch(intent);
     }
 
     private void setAdapterData(List<Currency> currencyList) {
@@ -140,10 +149,8 @@ public class CurrencyListFragment extends Fragment {
     }
 
     private void openCurrencyDetailsFragment(Currency currency) {
-        CurrencyDetailsFragment fragment = CurrencyDetailsFragment.newInstance(currency);
-        getParentFragmentManager().beginTransaction()
-                .add(R.id.fragmentContainerView, fragment)
-                .addToBackStack(null)
-                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("CURRENCY", currency);
+        navController.navigate(R.id.action_currencyList_to_currencyDetails, bundle);
     }
 }
